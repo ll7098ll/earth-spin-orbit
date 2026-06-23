@@ -33,7 +33,7 @@ const ExperimentLayout = ({
 
   useEffect(() => {
     restartQuiz();
-  }, [quizContent]);
+  }, [title]);
 
   const handleAnswerSelect = (optionIndex) => {
     if (isAnswered) return;
