@@ -59,8 +59,7 @@ const ExperimentLayout = ({
       setQuizFinished(true);
       
       // If perfect score, launch confetti!
-      const finalScore = score + (selectedAnswer === quizContent[quizIndex].answerIndex ? 1 : 0);
-      if (finalScore === quizContent.length) {
+      if (score === quizContent.length) {
         triggerConfetti();
       }
     }

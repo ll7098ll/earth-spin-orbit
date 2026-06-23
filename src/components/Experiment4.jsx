@@ -144,7 +144,7 @@ const Experiment4 = ({ onBack }) => {
 
       // Wide/high viewpoint looking down on orbit, preventing cuts
       camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-      camera.position.set(0, 13, 19);
+      camera.position.set(0, 18, 30); // Moved camera back to prevent orbital labels from being cut off
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(w, h);

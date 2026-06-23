@@ -33,7 +33,7 @@ const Experiment2 = ({ onBack }) => {
 
     const obsCtx = obsCanvas.getContext('2d');
     let scene, camera, renderer, controls;
-    let earthMesh, axisLine, sunLightMesh, starLightMesh;
+    let earthMesh, axisLine, sunLightMesh, starLightMesh, pinMesh;
     let animationId = null;
 
     // 1. Initialize 3D Space View
@@ -69,6 +69,26 @@ const Experiment2 = ({ onBack }) => {
       earthMesh = new THREE.Mesh(earthGeo, earthMat);
       earthMesh.rotation.z = -0.41; // 23.5 degrees tilt
       scene.add(earthMesh);
+
+      // Korea Pin (Cone representing the observer)
+      const pinGeo = new THREE.ConeGeometry(0.1, 0.4, 16);
+      pinGeo.rotateX(Math.PI / 2);
+      const pinMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+      pinMesh = new THREE.Mesh(pinGeo, pinMat);
+
+      // Position Pin on Earth at Seoul's coordinates (~37.5° N, ~127° E)
+      const radius = 2.0;
+      const phi = (90 - 37.5) * (Math.PI / 180);
+      const theta = (127.0 + 180) * (Math.PI / 180);
+      
+      const px = -radius * Math.sin(phi) * Math.sin(theta);
+      const py = radius * Math.cos(phi);
+      const pz = radius * Math.sin(phi) * Math.cos(theta);
+
+      pinMesh.position.set(px, py, pz);
+      pinMesh.lookAt(new THREE.Vector3(0,0,0));
+      pinMesh.position.multiplyScalar(1.08); // Float slightly above surface
+      earthMesh.add(pinMesh);
 
       // Earth Axis Line (red)
       const axisPoints = [new THREE.Vector3(0, -3.2, 0), new THREE.Vector3(0, 3.2, 0)];
@@ -158,41 +178,51 @@ const Experiment2 = ({ onBack }) => {
       obsCtx.globalAlpha = 1.0;
 
       // Apparent motions (sun and star positions are mirrored to Earth rotation)
-      const observerAngle = -earthAngleRef.current;
-      const sunRelX = w * 0.5 + w * 0.38 * Math.cos(observerAngle);
-      const sunRelY = h * 0.5 + h * 0.1 * Math.sin(observerAngle);
+      const R_x = w * 0.38;
+      const R_y = h * 0.45;
+      const groundY = h * 0.75;
 
-      // Sun
-      obsCtx.beginPath();
-      obsCtx.arc(sunRelX, sunRelY, 15, 0, Math.PI * 2);
-      obsCtx.fillStyle = '#facc15';
-      obsCtx.shadowBlur = 20;
-      obsCtx.shadowColor = '#eab308';
-      obsCtx.fill();
-      obsCtx.shadowBlur = 0;
+      const sunAngle = -earthAngleRef.current;
+      const sunRelX = w * 0.5 + R_x * Math.cos(sunAngle);
+      const sunRelY = groundY - R_y * Math.sin(sunAngle);
 
-      obsCtx.fillStyle = '#eab308';
-      obsCtx.font = 'bold 10px Noto Sans KR';
-      obsCtx.textAlign = 'center';
-      obsCtx.fillText('전등 (태양)', sunRelX, sunRelY - 22);
+      const starAngle = -earthAngleRef.current + Math.PI;
+      const starRelX = w * 0.5 + R_x * Math.cos(starAngle);
+      const starRelY = groundY - R_y * Math.sin(starAngle);
 
-      // Star
-      const starRelX = w * 0.5 + w * 0.38 * Math.cos(observerAngle + Math.PI);
-      const starRelY = h * 0.5 + h * 0.1 * Math.sin(observerAngle + Math.PI);
+      // Sun (Only draw if above horizon to prevent floating labels)
+      if (sunRelY < groundY + 10) {
+        obsCtx.beginPath();
+        obsCtx.arc(sunRelX, sunRelY, 15, 0, Math.PI * 2);
+        obsCtx.fillStyle = '#facc15';
+        obsCtx.shadowBlur = 20;
+        obsCtx.shadowColor = '#eab308';
+        obsCtx.fill();
+        obsCtx.shadowBlur = 0;
 
-      obsCtx.beginPath();
-      obsCtx.arc(starRelX, starRelY, 6, 0, Math.PI * 2);
-      obsCtx.fillStyle = '#06b6d4';
-      obsCtx.shadowBlur = 10;
-      obsCtx.shadowColor = '#06b6d4';
-      obsCtx.fill();
-      obsCtx.shadowBlur = 0;
+        obsCtx.fillStyle = '#eab308';
+        obsCtx.font = 'bold 10px Noto Sans KR';
+        obsCtx.textAlign = 'center';
+        obsCtx.fillText('전등 (태양)', sunRelX, sunRelY - 22);
+      }
 
-      obsCtx.fillStyle = '#06b6d4';
-      obsCtx.fillText('별 모형', starRelX, starRelY - 12);
+      // Star (Only draw if above horizon to prevent floating labels)
+      if (starRelY < groundY + 10) {
+        obsCtx.beginPath();
+        obsCtx.arc(starRelX, starRelY, 6, 0, Math.PI * 2);
+        obsCtx.fillStyle = '#06b6d4';
+        obsCtx.shadowBlur = 10;
+        obsCtx.shadowColor = '#06b6d4';
+        obsCtx.fill();
+        obsCtx.shadowBlur = 0;
+
+        obsCtx.fillStyle = '#06b6d4';
+        obsCtx.font = 'bold 10px Noto Sans KR';
+        obsCtx.textAlign = 'center';
+        obsCtx.fillText('별 모형', starRelX, starRelY - 12);
+      }
 
       // Ground
-      const groundY = h * 0.75;
       obsCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
       obsCtx.fillRect(0, groundY, w, h - groundY);
       obsCtx.strokeStyle = '#334155';
@@ -277,6 +307,10 @@ const Experiment2 = ({ onBack }) => {
         earthMesh.material.dispose();
         if (earthMesh.material.map) earthMesh.material.map.dispose();
       }
+      if (pinMesh) {
+        pinMesh.geometry.dispose();
+        pinMesh.material.dispose();
+      }
       if (axisLine) {
         axisLine.geometry.dispose();
         axisLine.material.dispose();
@@ -316,7 +350,7 @@ const Experiment2 = ({ onBack }) => {
       <div className="control-row">
         <span className="controls-section-title">지구 자전 조작</span>
         <div className="control-row-horizontal">
-          <button onClick={() => setIsPlaying(!isRotating)} className={`btn ${isRotating ? 'active' : ''}`}>
+          <button onClick={() => setIsRotating(!isRotating)} className={`btn ${isRotating ? 'active' : ''}`}>
             {isRotating ? <Pause size={14} /> : <Play size={14} />}
             {isRotating ? '자전 일시정지' : '자전 시작'}
           </button>

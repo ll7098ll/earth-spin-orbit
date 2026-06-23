@@ -53,7 +53,7 @@ const Experiment3 = ({ onBack }) => {
 
       // Camera positioned to view both Earth (left) and Sun (right)
       camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
-      camera.position.set(3, 4, 12);
+      camera.position.set(3.4, 5.5, 17);
 
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(w, h);
@@ -63,7 +63,7 @@ const Experiment3 = ({ onBack }) => {
       controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
-      controls.target.set(2.5, 0, 0); // Focus between Earth (0,0,0) and Sun (8,0,0)
+      controls.target.set(3.4, 0, 0); // Centered target between Earth (0,0,0) and Sun (8,0,0) to prevent cutoffs
 
       const ambient = new THREE.AmbientLight(0x0a0a1a, 0.5);
       scene.add(ambient);
@@ -387,7 +387,7 @@ const Experiment3 = ({ onBack }) => {
       {/* Seoul Pin Camera View */}
       <div className="viewport-box">
         <span className="viewport-title">지구 관측 카메라 (Seoul Pin) 전경</span>
-        <div className="phone-mockup" style={{ margin: '0 auto', maxWidth: '320px', height: '100%' }}>
+        <div className="phone-mockup">
           <div className="phone-screen">
             <div className="phone-top-bar">
               <span>Seoul, Korea</span>
@@ -412,7 +412,7 @@ const Experiment3 = ({ onBack }) => {
       <div className="control-row">
         <span className="controls-section-title">자전 제어</span>
         <div className="control-row-horizontal">
-          <button onClick={() => setIsPlaying(!isRotating)} className={`btn ${isRotating ? 'active' : ''}`}>
+          <button onClick={() => setIsRotating(!isRotating)} className={`btn ${isRotating ? 'active' : ''}`}>
             {isRotating ? <Pause size={14} /> : <Play size={14} />}
             {isRotating ? '자전 일시정지' : '자전 시작'}
           </button>
