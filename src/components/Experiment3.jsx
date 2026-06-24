@@ -93,25 +93,73 @@ const Experiment3 = ({ onBack }) => {
       scene.add(earthMesh);
 
       // Seoul Pin (Cone)
-      const pinGeo = new THREE.ConeGeometry(0.1, 0.4, 16);
+      const pinGeo = new THREE.ConeGeometry(0.08, 0.3, 16);
       pinGeo.rotateX(Math.PI / 2);
       const pinMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
       pinMesh = new THREE.Mesh(pinGeo, pinMat);
 
-      // Position Pin on Earth at Seoul's coordinates (~37.5° N, ~127° E)
+      // Position Pin on Earth at Seoul's coordinates aligned with the procedural texture red dot (525, 140)
+      const targetU = 525 / 1024;
+      const targetV = 1 - 140 / 512;
+      const theta = targetU * 2 * Math.PI;
+      const phi = (1 - targetV) * Math.PI;
       const radius = 2.0;
-      const phi = (90 - 37.5) * (Math.PI / 180);
-      const theta = (127.0 + 180) * (Math.PI / 180);
-      
-      const px = -radius * Math.sin(phi) * Math.sin(theta);
+
+      const px = -radius * Math.cos(theta) * Math.sin(phi);
       const py = radius * Math.cos(phi);
-      const pz = radius * Math.sin(phi) * Math.cos(theta);
+      const pz = radius * Math.sin(theta) * Math.sin(phi);
 
       pinMesh.position.set(px, py, pz);
       pinMesh.lookAt(new THREE.Vector3(0,0,0));
-      pinMesh.position.multiplyScalar(1.08); // Float slightly above surface
+      pinMesh.position.multiplyScalar(1.04); // Float slightly above surface
       pinMesh.visible = showPinRef.current;
       earthMesh.add(pinMesh);
+
+      // 1. Local Compass Rose (N, S, E, W direction lines on the ground)
+      const compassGroup = new THREE.Group();
+      
+      const createDirectionLine = (dir, length, color) => {
+        const points = [new THREE.Vector3(0, 0, 0), dir.clone().multiplyScalar(length)];
+        const geo = new THREE.BufferGeometry().setFromPoints(points);
+        const mat = new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+        return new THREE.Line(geo, mat);
+      };
+      
+      // North (+Y), South (-Y), East (+X), West (-X)
+      const lineN = createDirectionLine(new THREE.Vector3(0, 0.4, 0), 0.4, 0x3b82f6); // Blue for North
+      const lineS = createDirectionLine(new THREE.Vector3(0, -0.4, 0), 0.6, 0xef4444); // Red for South (Sight direction, longer)
+      const lineE = createDirectionLine(new THREE.Vector3(0.4, 0, 0), 0.4, 0x10b981); // Green for East
+      const lineW = createDirectionLine(new THREE.Vector3(-0.4, 0, 0), 0.4, 0xf59e0b); // Orange for West
+      
+      compassGroup.add(lineN);
+      compassGroup.add(lineS);
+      compassGroup.add(lineE);
+      compassGroup.add(lineW);
+      pinMesh.add(compassGroup);
+
+      // 2. Observer's Field of View Cone (Zenith sky dome)
+      const fovGeo = new THREE.ConeGeometry(1.2, 2.5, 16, 1, true); // height 2.5, radius 1.2, open-ended
+      fovGeo.translate(0, -1.25, 0); // move tip to (0,0,0)
+      fovGeo.rotateX(-Math.PI / 2); // rotate to point along negative Z-axis (straight up into space)
+      
+      const fovMat = new THREE.MeshBasicMaterial({
+        color: 0x06b6d4,
+        transparent: true,
+        opacity: 0.12,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending
+      });
+      const fovMesh = new THREE.Mesh(fovGeo, fovMat);
+      
+      const fovWireMat = new THREE.MeshBasicMaterial({
+        color: 0x06b6d4,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.2
+      });
+      const fovMeshWire = new THREE.Mesh(fovGeo, fovWireMat);
+      fovMesh.add(fovMeshWire);
+      pinMesh.add(fovMesh);
 
       // Earth Axis Line
       const axisPoints = [new THREE.Vector3(0, -3.2, 0), new THREE.Vector3(0, 3.2, 0)];
