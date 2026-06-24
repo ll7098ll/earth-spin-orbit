@@ -385,47 +385,88 @@ const Experiment1 = ({ onBack }) => {
   const studyContent = [
     {
       icon: '📖',
-      title: '하루 동안 태양과 별의 위치 변화 (교과서 88~91쪽)',
-      description: '하루 동안 태양이 뜨고 질 때까지, 그리고 밤하늘의 별들이 흐르는 모습은 규칙적인 운동을 나타냅니다.',
+      title: '하루 동안 태양과 별의 이동 경로 (교과서 88~91쪽)',
+      description: `하루 동안 태양과 별은 같은 방향으로 흐르며 일정한 규칙성을 보입니다.<br/>
+      <div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.05); border-left: 4px solid var(--accent-pink); border-radius: 4px; font-weight: bold; text-align: center;">
+        천체의 이동 규칙: [동쪽 하늘] ➔ [남쪽 하늘] ➔ [서쪽 하늘] (시계 방향 ↻)
+      </div>`,
       list: [
-        '<strong>태양의 위치 변화 (교과서 89쪽)</strong>: 하루 동안 태양은 <strong>동쪽 하늘에서 남쪽 하늘을 지나 서쪽 하늘</strong>로 위치가 달라집니다.',
-        '<strong>관찰 권장 시각</strong>: 교과서 실험에서는 하루 동안 <strong>오전 8시 30분 무렵, 오후 12시 30분 무렵, 오후 4시 30분 무렵</strong>에 태양의 위치를 각각 측정하여 기록합니다.',
-        '<strong>별의 위치 변화 (교과서 91쪽)</strong>: 별(대표적으로 여름철 밤하늘의 알타이르 별) 역시 태양과 마찬가지로 <strong>동쪽 하늘에서 남쪽 하늘을 지나 서쪽 하늘</strong>로 위치가 달라집니다.',
-        '<strong>관찰 권장 시각</strong>: 밤 동안 <strong>오후 8시 무렵, 오전 0시(자정) 무렵, 오전 5시 무렵</strong>에 남쪽 하늘을 바라보고 관측하여 기록합니다.',
-        '<strong>핵심 결론</strong>: 태양과 별을 포함한 하늘의 천체들은 하루 동안 <strong>동쪽에서 서쪽</strong>으로 위치가 달라지는 규칙성이 있습니다.'
+        '<strong>태양의 위치 변화 (89쪽)</strong>: 아침에 동쪽에서 떠올라 낮에 남쪽을 거쳐 저녁에 서쪽으로 집니다.',
+        '<strong>태양 관측 타임라인</strong>:<br/>' +
+        '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 5px 0; text-align: center; font-size: 0.85rem;">' +
+        '  <div style="background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); padding: 4px; border-radius: 4px;"><strong>오전 8:30</strong><br/>🌅 동쪽 하늘</div>' +
+        '  <div style="background: rgba(245,158,11,0.25); border: 1px solid rgba(245,158,11,0.5); padding: 4px; border-radius: 4px;"><strong>오후 12:30</strong><br/>☀️ 남쪽 (가장 높음)</div>' +
+        '  <div style="background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); padding: 4px; border-radius: 4px;"><strong>오후 4:30</strong><br/>🌇 서쪽 하늘</div>' +
+        '</div>',
+        '<strong>별의 위치 변화 (91쪽)</strong>: 밤하늘의 별(예: 여름철 대표 별 알타이르)도 태양과 똑같이 동에서 남을 지나 서로 이동합니다.',
+        '<strong>별 관측 타임라인</strong>:<br/>' +
+        '<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 5px 0; text-align: center; font-size: 0.85rem;">' +
+        '  <div style="background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); padding: 4px; border-radius: 4px;"><strong>오후 8:00 무렵</strong><br/>✨ 동쪽 하늘</div>' +
+        '  <div style="background: rgba(6,182,212,0.25); border: 1px solid rgba(6,182,212,0.5); padding: 4px; border-radius: 4px;"><strong>오전 0:00 (자정)</strong><br/>⭐ 남쪽 하늘</div>' +
+        '  <div style="background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); padding: 4px; border-radius: 4px;"><strong>오전 5:00 무렵</strong><br/>🌌 서쪽 하늘</div>' +
+        '</div>',
+        '<strong>인과적 결론</strong>: 태양과 별의 이러한 하루 동안의 규칙적인 위치 변화는 실제 천체들이 도는 것이 아니라, <strong>지구가 스스로 회전하기 때문(자전)</strong>에 생기는 현상입니다.'
       ]
     },
     {
-      icon: '👓',
-      title: '태양 안전 관측 및 낮에 별이 안 보이는 까닭',
-      description: '태양빛은 강렬하므로 반드시 안전 규칙을 지켜 관측해야 합니다.',
+      icon: '🕶️',
+      title: '안전 관측 규칙 및 대기 산란 (교과서 88~90쪽)',
+      description: `강렬한 태양빛으로부터 눈을 보호하고 낮과 밤의 별 관측 차이를 이해하는 과학 원리입니다.`,
       list: [
-        '<strong>태양 관측 안경 착용 (교과서 88쪽)</strong>: 태양 빛은 매우 강하므로 맨눈으로 절대 보지 않고, <strong>반드시 태양 관측 안경</strong>을 착용해 눈을 보호해야 합니다.',
-        '<strong>대기 산란 현상 (교과서 90쪽)</strong>: 낮에 밤하늘의 별이 보이지 않는 까닭은, <strong>태양 빛이 너무 강해 지구의 대기가 밝게 빛나기(산란) 때문</strong>입니다. 천체 관측 프로그램(시뮬레이터의 [대기 제거] 버튼)을 통해 대기를 없애면 낮에도 별이 그 자리에 계속 움직이고 있음을 볼 수 있습니다.'
+        '<strong>⚠️ 태양 안전 관측 수칙 (88쪽)</strong>: 태양 빛은 눈에 해로우므로 맨눈이나 일반 선글라스, 망원경으로 직접 보면 절대 안 되며, <strong>반드시 태양 관측 안경(특수 필터)</strong>을 착용해야 합니다.',
+        '<strong>🌤️ 낮에 별이 보이지 않는 이유 (90쪽)</strong>:<br/>' +
+        '<div style="margin: 5px 0; padding: 8px; background: rgba(56,189,248,0.1); border-left: 3px solid #38bdf8; border-radius: 4px; font-size: 0.85rem; line-height: 1.4;">' +
+        '  <strong>태양광 입사</strong> ➔ <strong>지구 대기 산란(Scattering)</strong> ➔ <strong>하늘 전체가 밝아짐</strong> ➔ <strong>별빛이 가려짐</strong>' +
+        '</div>' +
+        '천체 관측 프로그램(시뮬레이터의 [대기 제거])을 통해 대기 산란을 없새면, <strong>낮에도 별들이 하늘에서 계속 흐르고 있음</strong>을 확인할 수 있습니다.'
       ]
     }
   ];
 
   const quizContent = [
     {
-      question: "Q1. 하루 동안 태양과 별의 위치는 어느 쪽 하늘에서 어느 쪽 하늘로 달라질까요? (교과서 89, 91쪽)",
+      question: "Q1. 하루 동안 시간이 지남에 따라 태양과 밤하늘의 별들이 이동하는 규칙적인 경로와 방향은 어떻게 되나요? (교과서 89, 91쪽)",
       options: [
-        "서쪽 하늘에서 동쪽 하늘로 달라진다.",
+        "서쪽 하늘에서 남쪽 하늘을 지나 동쪽 하늘로 달라진다.",
         "동쪽 하늘에서 남쪽 하늘을 지나 서쪽 하늘로 달라진다.",
-        "남쪽 하늘에서 남극 방향으로 달라진다."
+        "남쪽 하늘에서 북쪽 하늘을 지나 서쪽 하늘로 달라진다.",
+        "동쪽 하늘에서 북쪽 하늘을 지나 서쪽 하늘로 달라진다."
       ],
       answerIndex: 1,
-      explanation: "교과서 정리 활동에 명시된 대로, 하루 동안 태양과 별은 모두 '동쪽 ➔ 남쪽 ➔ 서쪽'으로 위치가 이동하는 동일한 규칙성을 보여줍니다."
+      explanation: "교과서 89쪽(태양)과 91쪽(별)에 정리된 것과 같이, 하루 동안 하늘의 모든 천체는 '동쪽 ➔ 남쪽 ➔ 서쪽'으로 이동하는 규칙성을 보여줍니다."
     },
     {
-      question: "Q2. 낮에 밤하늘의 별을 맨눈으로 볼 수 없는 까닭은 무엇인가요? (교과서 90쪽)",
+      question: "Q2. 낮에도 별들은 하늘에 떠 있지만 우리 맨눈으로 볼 수 없는 과학적인 까닭은 무엇인가요? (교과서 90쪽)",
       options: [
-        "낮에는 우주 공간에 별들이 존재하지 않기 때문에",
-        "태양 빛이 너무 강해 지구의 대기가 밝게 빛나기 때문에",
-        "지구가 자전을 멈춰 별의 빛을 차단하기 때문에"
+        "낮에는 태양의 높은 온도로 인해 별들이 잠시 증발하기 때문에",
+        "태양 빛이 너무 강해 지구의 대기가 밝게 빛나기(산란) 때문에",
+        "지구가 자전을 멈춰 별빛이 차단되기 때문에",
+        "낮 동안 별들이 지구 반대편 우주 공간으로 모두 이동하기 때문에"
       ],
       answerIndex: 1,
-      explanation: "낮에도 별은 하늘에 떠 있지만, 강렬한 태양빛에 의해 지구 대기층이 밝게 산란되므로 보이지 않는 것입니다."
+      explanation: "낮에도 별은 그 자리에 있지만, 태양빛이 지구의 대기에 산란되어 하늘 전체가 별빛보다 훨씬 밝아지기 때문에 눈에 보이지 않는 것입니다."
+    },
+    {
+      question: "Q3. 교과서 실험이나 야외에서 태양의 위치 변화를 기록하고 관찰할 때 지켜야 할 가장 중요한 안전 수칙은 무엇인가요? (교과서 88쪽)",
+      options: [
+        "망원경이나 쌍안경을 사용해 태양을 확대해서 오랫동안 관찰한다.",
+        "일반적인 패션 선글라스를 끼고 태양을 직접 쳐다본다.",
+        "맨눈으로 빠르게 태양을 흘겨보며 위치를 기록한다.",
+        "반드시 태양 빛을 안전하게 차단하는 태양 관측 안경을 착용한다."
+      ],
+      answerIndex: 3,
+      explanation: "태양 빛은 매우 강하므로 맨눈이나 일반 선글라스, 망원경 등으로 절대 직접 보면 안 되며, 반드시 안전이 검증된 태양 관측 안경을 착용해야 합니다."
+    },
+    {
+      question: "Q4. 7월 15일 오후 8시 무렵 동쪽 하늘에서 관측된 독수리자리의 밝은 별 '알타이르'는 다음 날 오전 0시(자정) 무렵에는 어느 방향 하늘에서 관찰될까요? (교과서 90~91쪽)",
+      options: [
+        "서쪽 하늘",
+        "동쪽 하늘",
+        "남쪽 하늘",
+        "북쪽 하늘"
+      ],
+      answerIndex: 2,
+      explanation: "별은 하루 동안 동쪽에서 남쪽을 지나 서쪽으로 움직입니다. 오후 8시 무렵 동쪽 하늘에 떴던 별은 시간이 흐르며 남상하여 자정(오전 0시) 무렵에는 남쪽 하늘 중앙(남중)에 오게 됩니다."
     }
   ];
 
