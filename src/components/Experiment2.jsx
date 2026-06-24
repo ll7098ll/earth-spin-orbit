@@ -225,18 +225,22 @@ const Experiment2 = ({ onBack }) => {
       }
       obsCtx.globalAlpha = 1.0;
 
-      // Apparent motions (sun and star positions are mirrored to Earth rotation)
+      // Apparent motions (sun and star positions are perfectly synchronized with the 3D pin's rotation)
       const R_x = w * 0.38;
       const R_y = h * 0.45;
       const groundY = h * 0.75;
 
-      const sunAngle = -earthAngleRef.current;
-      const sunRelX = w * 0.5 + R_x * Math.cos(sunAngle);
-      const sunRelY = groundY - R_y * Math.sin(sunAngle);
+      // World longitude of the observer pin: local longitude (525/1024 * 2 * PI) + Earth's rotation angle
+      const theta_local = (525 / 1024) * 2 * Math.PI;
+      const theta_obs = theta_local + earthAngleRef.current;
 
-      const starAngle = -earthAngleRef.current + Math.PI;
-      const starRelX = w * 0.5 + R_x * Math.cos(starAngle);
-      const starRelY = groundY - R_y * Math.sin(starAngle);
+      // Sun position: directly overhead (South, middle of screen) at theta_obs = 0
+      const sunRelX = w * 0.5 + R_x * Math.sin(theta_obs);
+      const sunRelY = groundY - R_y * Math.cos(theta_obs);
+
+      // Star position: 180 degrees opposite to the Sun
+      const starRelX = w * 0.5 - R_x * Math.sin(theta_obs);
+      const starRelY = groundY + R_y * Math.cos(theta_obs);
 
       // Sun (Only draw if above horizon to prevent floating labels)
       if (sunRelY < groundY + 10) {

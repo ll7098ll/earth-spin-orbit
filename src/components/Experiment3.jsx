@@ -215,9 +215,14 @@ const Experiment3 = ({ onBack }) => {
 
       phoneCtx.clearRect(0, 0, w, h);
 
-      // Phase offset to align midday with sun direction
-      const pinPhase = Math.PI * 0.15;
-      const relativeAngle = (earthAngleRef.current + pinPhase) % (Math.PI * 2);
+      // World longitude of the observer pin: local longitude (525/1024 * 2 * PI) + Earth's rotation angle
+      const theta_local = (525 / 1024) * 2 * Math.PI;
+      let theta_obs = (theta_local + earthAngleRef.current) % (Math.PI * 2);
+      if (theta_obs < 0) theta_obs += Math.PI * 2;
+
+      // relativeAngle starts at 0 at Sunrise (theta_obs = 3*PI/2) and reaches PI/2 at Noon (theta_obs = 0)
+      let relativeAngle = (theta_obs + Math.PI / 2) % (Math.PI * 2);
+      if (relativeAngle < 0) relativeAngle += Math.PI * 2;
 
       const lightIntensity = Math.sin(relativeAngle);
       const isDay = lightIntensity > 0;
