@@ -231,8 +231,9 @@ const Experiment2 = ({ onBack }) => {
       const groundY = h * 0.75;
 
       // World longitude of the observer pin: local longitude (525/1024 * 2 * PI) + Earth's rotation angle
+      // Subtract PI to align the physical 3D pin direction (facing the sun) with the 2D noon position
       const theta_local = (525 / 1024) * 2 * Math.PI;
-      const theta_obs = theta_local + earthAngleRef.current;
+      const theta_obs = theta_local + earthAngleRef.current - Math.PI;
 
       // Sun position: directly overhead (South, middle of screen) at theta_obs = 0
       const sunRelX = w * 0.5 + R_x * Math.sin(theta_obs);
