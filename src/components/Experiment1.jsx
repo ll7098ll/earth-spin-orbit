@@ -5,11 +5,9 @@ import { Play, Pause, Sun, Star, Trash2 } from 'lucide-react';
 const Experiment1 = ({ onBack }) => {
   const [time, setTime] = useState(6.0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [glassesOn, setGlassesOn] = useState(false);
   const [atmosphereOff, setAtmosphereOff] = useState(false);
   const [showTrajectory, setShowTrajectory] = useState(false);
   const [stickers, setStickers] = useState([]);
-  const [warningDismissed, setWarningDismissed] = useState(false);
 
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -49,10 +47,6 @@ const Experiment1 = ({ onBack }) => {
   // Sticker actions
   const handleAddSunSticker = () => {
     if (time >= 6.0 && time <= 18.0) {
-      if (!glassesOn) {
-        alert("⚠️ 태양 빛이 너무 눈부셔 태양 딱지를 정확하게 붙일 수 없습니다! 먼저 태양 관측 안경을 착용해 주세요.");
-        return;
-      }
       const pos = getSunPosition(time);
       setStickers(prev => [...prev, { type: 'sun', time, x: pos.x, y: pos.y }]);
     } else {
@@ -212,29 +206,16 @@ const Experiment1 = ({ onBack }) => {
       // 5. Draw Sun (Daytime)
       const sunPos = getSunPosition(time);
       if (isDay) {
-        if (glassesOn) {
-          ctx.beginPath();
-          ctx.arc(sunPos.x * w, sunPos.y * h, 14, 0, Math.PI * 2);
-          ctx.fillStyle = '#22c55e';
-          ctx.fill();
-          ctx.strokeStyle = '#16a34a';
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          ctx.fillStyle = '#fca5a5';
-          ctx.font = 'bold 11px Noto Sans KR';
-          ctx.fillText('필터 통과한 태양', sunPos.x * w, sunPos.y * h - 22);
-        } else {
-          ctx.beginPath();
-          ctx.shadowBlur = 35;
-          ctx.shadowColor = '#f59e0b';
-          ctx.arc(sunPos.x * w, sunPos.y * h, 18, 0, Math.PI * 2);
-          ctx.fillStyle = '#fffbeb';
-          ctx.fill();
-          ctx.shadowBlur = 0;
-          ctx.fillStyle = '#f59e0b';
-          ctx.font = 'bold 12px Noto Sans KR';
-          ctx.fillText('태양', sunPos.x * w, sunPos.y * h - 25);
-        }
+        ctx.beginPath();
+        ctx.shadowBlur = 35;
+        ctx.shadowColor = '#f59e0b';
+        ctx.arc(sunPos.x * w, sunPos.y * h, 18, 0, Math.PI * 2);
+        ctx.fillStyle = '#fffbeb';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = 'bold 12px Noto Sans KR';
+        ctx.fillText('태양', sunPos.x * w, sunPos.y * h - 25);
       }
 
       // 6. Draw Star (Altair)
@@ -326,63 +307,13 @@ const Experiment1 = ({ onBack }) => {
     return () => {
       window.removeEventListener('resize', resize);
     };
-  }, [time, glassesOn, atmosphereOff, showTrajectory, stickers]);
-
-  // Adjust glare overlay DOM directly (since overlay uses CSS custom properties)
-  useEffect(() => {
-    const sunPos = getSunPosition(time);
-    const isDay = time >= 6.0 && time <= 18.0;
-    const glare = document.getElementById('exp1-glareOverlay');
-    const container = containerRef.current;
-    
-    if (glare && container) {
-      if (sunPos.y < 0.7 && !glassesOn && isDay) {
-        glare.classList.add('active');
-        const rect = container.getBoundingClientRect();
-        const pixelX = sunPos.x * rect.width;
-        const pixelY = sunPos.y * rect.height;
-        glare.style.setProperty('--sun-x', `${pixelX}px`);
-        glare.style.setProperty('--sun-y', `${pixelY}px`);
-      } else {
-        glare.classList.remove('active');
-      }
-    }
-  }, [time, glassesOn]);
+  }, [time, atmosphereOff, showTrajectory, stickers]);
 
   // UI Components
   const simulator = (
-    <>
-      {/* Safety Warning Banner */}
-      {!warningDismissed && (
-        <div className={`safety-warning ${glassesOn ? 'safe' : ''}`}>
-          <span style={{ fontSize: '1.2rem' }}>{glassesOn ? '🟢' : '⚠️'}</span>
-          <div>
-            {glassesOn ? (
-              <span>
-                <strong>관측 안경 착용 완료!</strong> 특수 필터 덕분에 눈을 보호하고 태양의 위치를 뚜렷하게 관찰할 수 있습니다.
-              </span>
-            ) : (
-              <span>
-                <strong>맨눈 관측 주의!</strong> 태양 빛은 매우 강해 눈에 해롭습니다. 
-                하늘을 안전하게 관찰하기 위해 <strong>[태양 관측 안경 착용]</strong>을 활성화해 주세요.
-              </span>
-            )}
-          </div>
-          <button className="warning-close-btn" onClick={() => setWarningDismissed(true)}>
-            &times;
-          </button>
-        </div>
-      )}
-
-      {/* Sky Canvas Container */}
-      <div className="canvas-container" ref={containerRef}>
-        <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
-        <div className="glare-overlay" id="exp1-glareOverlay" />
-        <div className={`filter-overlay ${glassesOn ? 'active' : ''}`}>
-          <span className="filter-label">관측 안경 필터 작동 중</span>
-        </div>
-      </div>
-    </>
+    <div className="canvas-container" ref={containerRef}>
+      <canvas ref={canvasRef} style={{ width: '100%', height: '100%', display: 'block' }} />
+    </div>
   );
 
   const controls = (
@@ -408,9 +339,6 @@ const Experiment1 = ({ onBack }) => {
           <button onClick={() => setIsPlaying(!isPlaying)} className={`btn ${isPlaying ? 'active' : ''}`}>
             {isPlaying ? <Pause size={14} /> : <Play size={14} />}
             {isPlaying ? '일시정지' : '재생'}
-          </button>
-          <button onClick={() => setGlassesOn(!glassesOn)} className={`btn ${glassesOn ? 'active' : ''}`}>
-            👓 안경 필터 {glassesOn ? '해제' : '착용'}
           </button>
         </div>
       </div>
